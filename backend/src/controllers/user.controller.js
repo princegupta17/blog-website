@@ -14,7 +14,10 @@ const register = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Apierror(400, "User already exists");
   }
-
+  if (!req.file) {
+    res.status(500);
+    throw new Apierror(501, "image is required");
+  }
   const imagefilepath = req.file.path;
   const imageresponse = await uploadoncloud(imagefilepath);
 
