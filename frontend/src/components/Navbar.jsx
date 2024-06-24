@@ -4,7 +4,7 @@ import { getUser } from "../Slice/userSlice";
 import axios from "axios";
 
 function Navbar() {
-  const user = useSelector((state) => state.User);
+  const user = useSelector((state) => state.user.User);
   const dispatch = useDispatch();
 
   const userLogout = async () => {

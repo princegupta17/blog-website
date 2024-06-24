@@ -1,11 +1,14 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Create_post() {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -13,10 +16,28 @@ function Create_post() {
     setPreview(URL.createObjectURL(file));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log({ title, description, image });
+    await axios
+      .post(
+        "/api/v1/posts/create",
+        {
+          title,
+          content,
+          image,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        navigate("/");
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -41,8 +62,8 @@ function Create_post() {
               <textarea
                 className="w-full p-3 border rounded"
                 placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
               />
             </div>
             <div className="mb-4">
@@ -60,7 +81,10 @@ function Create_post() {
                 />
               )}
             </div>
-            <button className="w-full p-3 bg-blue-500 text-white rounded">
+            <button
+              className="w-full p-3 bg-blue-500 text-white rounded"
+              type="submit"
+            >
               Create Post
             </button>
           </form>
